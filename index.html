@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Live Ticker - 2D</title>
+    <style>
+        /* ဖုန်း Screen ထိပ်ဆုံးမှာ အမြဲကပ်နေမယ့် Ticker Bar */
+        .top-ticker-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #111111;
+            color: #ffffff;
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            z-index: 9999;
+            font-family: monospace;
+            font-size: 15px;
+        }
+
+        /* စာတန်းပြေး (Ticker) Animation */
+        .ticker-content {
+            display: inline-block;
+            padding-left: 100%;
+            animation: tickerScroll 18s linear infinite;
+        }
+
+        .ticker-content span.item-group {
+            margin-right: 50px;
+        }
+
+        @keyframes tickerScroll {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* တောင်းဆိုထားသော အစိမ်းရောင် Highlight */
+        .highlight-green {
+            color: #00ff66;
+            font-weight: bold;
+        }
+
+        /* Main Page Layout */
+        body {
+            margin: 0;
+            padding-top: 50px; /* Ticker bar နေရာလွတ် */
+            background-color: #f9f9f9;
+            font-family: sans-serif;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Status Bar အောက်မှာ အမြဲပေါ်နေမယ့် Live Ticker Bar -->
+    <div class="top-ticker-bar">
+        <div class="ticker-content" id="liveTicker">
+            Loading Live Data...
+        </div>
+    </div>
+
+    <!-- Website ၏ ပင်မ အကြောင်းအရာများ -->
+    <div class="container">
+        <h2>GitHub Pages Live Ticker App</h2>
+        
+        <div class="card">
+            <h3>လက်ရှိ အခြေအနေ</h3>
+            <p id="statusDisplay">ချိတ်ဆက်နေသည်...</p>
+        </div>
+
+        <div class="card">
+            <p>ℹ️ ဤ App သည် ထိပ်ဆုံးတွင် status bar အောက်နား၌ Live Ticker စာတန်းပြေးပုံစံဖြင့် အမြဲပေါ်နေမည် ဖြစ်ပြီး၊ <a href="https://johnzayar.github.io/2D/" target="_blank">JohnZayar 2D</a> ဖော်မြူလာ/ဒေတာများကို အခြေခံကာ တိုက်ရိုက် update ဖြစ်သွားပါမည်။</p>
+        </div>
+    </div>
+
+    <script>
+        // Data များကို Fetch လုပ်ပြီး တွက်ချက်ကာ Ticker ထဲ ထည့်မည့် Function
+        async function fetchAndUpdateData() {
+            try {
+                // ကိုယ့်ရဲ့ GitHub Project (`https://johnzayar.github.io/2D/`) ဆီက data ဆွဲထုတ်ရန် (သို့မဟုတ် API ချိတ်ရန်)
+                // လက်တလော ဥပမာအနေဖြင့် သတ်မှတ်တန်ဖိုးများကို အသုံးပြုထားပြီး API ရှိပါက အစားထိုးနိုင်ပါသည်။
+                let rawSet = 2365.08;
+                let rawValue = 35557.89;
+
+                // တောင်းဆိုချက် ၁: Set 2365.08 -> ဒသမနောက် ဒုတိယအလုံး (8) ကို အစိမ်းရောင်ပြောင်းရန်
+                // 2365.08 -> "2365.0" + "8" (အစိမ်း)
+                let setFormatted = `Set 2365.0<span class="highlight-green">8</span>`;
+
+                // တောင်းဆိုချက် ၂: Value 35557.89 -> ဒဿမရှေ့က (7) ကို အစိမ်းရောင်ပြောင်းရန်
+                // 35557.89 -> "3555" + "7" (အစိမ်း) + ".89"
+                let valFormatted = `Value 3555<span class="highlight-green">7</span>.89`;
+
+                // Ticker ထဲမှာ ဆက်တိုက်ပြေးနေစေရန် ကွက်လပ်အနည်းငယ်နှင့် ထပ်ထည့်ခြင်း
+                let tickerHTML = `
+                    <span class="item-group">${setFormatted} &nbsp;&nbsp;|&nbsp;&nbsp; ${valFormatted}</span>
+                    <span class="item-group">${setFormatted} &nbsp;&nbsp;|&nbsp;&nbsp; ${valFormatted}</span>
+                `;
+
+                document.getElementById('liveTicker').innerHTML = tickerHTML;
+                document.getElementById('statusDisplay').innerHTML = `Last Updated: ${new Date().toLocaleTimeString()} <br><b>Set:</b> 2365.08 | <b>Value:</b> 35557.89`;
+
+            } catch (error) {
+                console.error("Data fetch error:", error);
+                document.getElementById('liveTicker').innerHTML = `<span style="color:red;">Error loading data</span>`;
+            }
+        }
+
+        // စစချင်း Run မည်
+        fetchAndUpdateData();
+
+        // ၃ စက္ကန့်တစ်ကြိမ် Live Update လုပ်ရန် (လိုအပ်သလို အချိန်ပြောင်းနိုင်သည်)
+        setInterval(fetchAndUpdateData, 3000);
+    </script>
+
+</body>
+</html>
