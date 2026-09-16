@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>2D 3D & Thai Lottery Live Ticker</title>
+    <style>
+        /* ဖုန်း Screen ထိပ်ဆုံးမှာ အမြဲကပ်နေမယ့် Ticker Bar */
+        .top-ticker-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #111111;
+            color: #ffffff;
+            padding: 10px 0;
+            overflow: hidden;
+            white-space: nowrap;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.5);
+            z-index: 9999;
+            font-family: monospace;
+            font-size: 15px;
+            font-weight: bold;
+        }
+
+        /* စာတန်းပြေး (Ticker) Animation */
+        .ticker-content {
+            display: inline-block;
+            padding-left: 100%;
+            animation: tickerScroll 25s linear infinite;
+        }
+
+        .ticker-content span.item-group {
+            margin-right: 50px;
+        }
+
+        @keyframes tickerScroll {
+            0% { transform: translate3d(0, 0, 0); }
+            100% { transform: translate3d(-100%, 0, 0); }
+        }
+
+        /* တောင်းဆိုထားသော အစိမ်းရောင် Highlight များ */
+        .highlight-green {
+            color: #00ff66;
+            font-weight: bold;
+        }
+
+        /* Main Page Layout */
+        body {
+            margin: 0;
+            padding-top: 50px;
+            background-color: #f4f4f4;
+            font-family: sans-serif;
+        }
+
+        .container {
+            padding: 20px;
+            max-width: 600px;
+            margin: auto;
+        }
+
+        .card {
+            background: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Status Bar အောက်မှာ ပေါ်နေမယ့် Live Ticker Bar -->
+    <div class="top-ticker-bar">
+        <div class="ticker-content" id="liveTicker">
+            Connecting to Live Data...
+        </div>
+    </div>
+
+    <!-- Website ၏ ပင်မ အကြောင်းအရာများ -->
+    <div class="container">
+        <h2>📊 Live Ticker App</h2>
+        
+        <div class="card">
+            <h3>Live အချက်အလက်များ အခြေအနေ</h3>
+            <p id="infoStatus">ဒေတာများကို ချိတ်ဆက်နေပါသည်...</p>
+        </div>
+    </div>
+
+    <script>
+        // Live Data များကို ဆွဲထုတ်ပြီး Update လုပ်မည့် Function
+        async function fetchLiveTickerData() {
+            try {
+                // ဒီနေရာမှာ ဆရာ့ရဲ့ တကယ့် Live API (သို့မဟုတ် 2D/3D API လင့်ခ်) ကို ထည့်နိုင်ပါတယ်။
+                // ဥပမာ - let response = await fetch('YOUR_API_URL');
+                // let data = await response.json();
+
+                // လက်လောတလော Live အလုပ်လုပ်ပုံကို ပြရန် variable ဖြင့် ထည့်ထားသည် (API ရှိလျှင် API data ဖြင့် အစားထိုးနိုင်သည်)
+                let rawSet = "2365.08";
+                let rawValue = "35557.89";
+                let thaiLotteryNum = "417212";
+
+                // ၁။ Set: ဒသမနောက် ဒုတိယအလုံး '8' ကို အစိမ်းရောင်ပြောင်းရန်
+                // 2365.08 -> 2365.0[8]
+                let formattedSet = `Set 2365.0<span class="highlight-green">8</span>`;
+
+                // ၂။ Value: ဒဿမရှေ့က '7' ကို အစိမ်းရောင်ပြောင်းရန်
+                // 35557.89 -> 3555[7].89
+                let formattedValue = `Value 3555<span class="highlight-green">7</span>.89`;
+
+                // ၃။ ထိုင်းထီ Live ဂဏန်း
+                let thaiLottery = `🇹🇭 Thai Lottery: <span class="highlight-green">${thaiLotteryNum}</span>`;
+
+                // အားလုံးကို တန်းစီပေါင်းစပ်ခြင်း
+                let combinedText = `${formattedSet} &nbsp;&nbsp;|&nbsp;&nbsp; ${formattedValue} &nbsp;&nbsp;|&nbsp;&nbsp; ${thaiLottery}`;
+
+                // စာတန်းပြေးထဲသို့ ထည့်သွင်းခြင်း
+                let tickerHTML = `
+                    <span class="item-group">${combinedText}</span>
+                    <span class="item-group">${combinedText}</span>
+                `;
+
+                document.getElementById('liveTicker').innerHTML = tickerHTML;
+                document.getElementById('infoStatusinnerHTML') = `Last Updated: ${new Date().toLocaleTimeString()}`;
+
+            } catch (error) {
+                console.error("Live fetch error:", error);
+                document.getElementById('liveTicker').innerHTML = `<span style="color:yellow;">Live data connecting...</span>`;
+            }
+        }
+
+        // စစချင်း Run မည်
+        fetchLiveTickerData();
+
+        // တကယ့် Live Update ဖြစ်စေရန် (၅ စက္ကန့် တစ်ကြိမ် Data အသစ်ဆွဲရန်)
+        setInterval(fetchLiveTickerData, 5000);
+    </script>
+
+</body>
+</html>
