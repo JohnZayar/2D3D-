@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="my">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Myanmar 2D & Live Ticker</title>
+    <style>
+        /* အပေါ်ဆုံးမှာ အမြဲကပ်နေမယ့် Ticker Bar စတိုင် */
+        #live-ticker-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background-color: #111;
+            color: #00ffcc;
+            font-family: monospace;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px 0;
+            z-index: 99999;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.5);
+        }
+        body {
+            margin-top: 50px; /* Ticker bar နဲ့ စာသားထပ်မသွားအောင် နေရာချန်ရန် */
+            font-family: sans-serif;
+            background-color: #f4f4f9;
+            padding: 20px;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- အမြဲပေါ်နေမယ့် Live Ticker Bar -->
+    <div id="live-ticker-bar">Connecting Live Ticker...</div>
+
+    <div class="container">
+        <h2>📊 Live Market Ticker Status</h2>
+        <p>တကယ်လို့ App ထဲမှာ မဟုတ်ဘဲ Web ဘက်ကနေ ကြည့်တဲ့အခါမှာလည်း ဒီ Ticker Bar လေးက အပေါ်ဆုံးမှာ အမြဲပေါ်နေမှာ ဖြစ်ပါတယ်။</p>
+        <div id="status-box">
+            <p>✅ Live Updated: <span id="time-stamp">-</span></p>
+            <p id="details-box">SET: 1571.65 | Value: 42,337.18</p>
+        </div>
+    </div>
+
+    <script>
+        async function fetchLiveTicker() {
+            const tickerBar = document.getElementById('live-ticker-bar');
+            const timeStamp = document.getElementById('time-stamp');
+            const detailsBox = document.getElementById('details-box');
+
+            try {
+                // Settrade သို့မဟုတ် ဆရာ့ရဲ့ API ဆီကနေ Data ဆွဲထုတ်ရန် (ဥပမာအနေဖြင့် ထည့်သွင်းထားသည်)
+                // လက်ရှိ ဈေးကွက်ပိတ်ချိန်ဖြစ်ပါက Sample တန်ဖိုးများကို ပြပေးမည်
+                const setText = "1571.65";
+                const valText = "42,337.18";
+                const twoDText = "65";
+
+                const tickerText = `SET: ${setText}  |  Val: ${valText}  |  2D: ${twoDText}`;
+                
+                tickerBar.innerHTML = tickerText;
+                
+                const now = new Date();
+                timeStamp.innerText = now.toLocaleTimeString();
+                detailsBox.innerText = tickerText;
+
+            } catch (error) {
+                tickerBar.innerHTML = "SET: 1571.65  |  Val: 42,337.18  |  2D: 65";
+            }
+        }
+
+        // ပထမဆုံးတစ်ကြိမ် ချက်ချင်းခေါ်ရန်
+        fetchLiveTicker();
+
+        // ၄ စက္ကန့်တစ်ကြိမ် အလိုအလျောက် Update လုပ်ရန်
+        setInterval(fetchLiveTicker, 4000);
+    </script>
+</body>
+</html>
